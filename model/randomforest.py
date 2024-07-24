@@ -47,35 +47,33 @@ class RandomForest(BaseModel):
         self.predictions = np.array(self.predictions).T
         df = pd.DataFrame(self.predictions)
         # data.df[Config.TYPE_COLS] == df
-        
 
+        print(df.shape)
+        print(data.y_test.shape)
 
          # Calculate and print accuracy for each type
-        #print("============================================== printing accuracy of each depentednt variable  =========================")
-        #accuracies = []
-        # for i, col in enumerate(Config.TYPE_COLS):
-        #     acc = accuracy_score(data.y_test.iloc[:, i], self.predictions[:, i])
-        #     accuracies.append(acc)
-        #     print(f'Accuracy for {col}: {acc:.2f}')
+        accuracies = []
+        for i, col in enumerate(Config.TYPE_COLS):
+            acc = accuracy_score(data.y_test.iloc[:, i], self.predictions[:, i])
+            accuracies.append(acc)
+            print(f'Accuracy for {col}: {acc:.2f}')
         
         # Calculate and print cumulative accuracies
         y2_accuracy = accuracy_score(data.y_test.iloc[:, 0], self.predictions[:, 0])
         y2_y3_accuracy = accuracy_score(data.y_test.iloc[:, :2].values.flatten(), self.predictions[:, :2].flatten())
         y2_y3_y4_accuracy = accuracy_score(data.y_test.iloc[:, :3].values.flatten(), self.predictions[:, :3].flatten())
-        print("============================================== printing accuracy of depentednt variable after adding output ================================")
-        print(f'Accuracy for y2 or Type 2: {y2_accuracy:.2f}')
-        print(f'Accuracy for y2 + y3 of Type 2 + Type 3: {y2_y3_accuracy:.2f}')
-        print(f'Accuracy for y2 + y3 + y4 of Type 2 + Type 3 + type 4: {y2_y3_y4_accuracy:.2f}')
-        print("============================================== End printing accuracy of depentednt variable after adding output ============================")
+        
+        print(f'Accuracy for y2: {y2_accuracy:.2f}')
+        print(f'Accuracy for y2 + y3: {y2_y3_accuracy:.2f}')
+        print(f'Accuracy for y2 + y3 + y4: {y2_y3_y4_accuracy:.2f}')
 
         for i in range(len(Config.TYPE_COLS)):
             true_classes = data.y_test.iloc[:, i].tolist()
             predicted_classes = self.predictions[:, i].tolist()
             accuracy = accuracy_score(data.y_test.iloc[:, i], self.predictions[:, i]) * 100
-            print("============================================== predicted class, true classes and accuracy of y2,y3,y4 ==================================")
-            print(f'Predicted Classes for column ----- {Config.TYPE_COLS[i]}: {predicted_classes}')
-            print(f'True Classes for column -----  {Config.TYPE_COLS[i]}: {true_classes}')
-            print(f'Accuracy for column -----  {Config.TYPE_COLS[i]}: {accuracy:.2f}%')
+            print(f'Predicted Classes for {Config.TYPE_COLS[i]}: {predicted_classes}')
+            print(f'True Classes for {Config.TYPE_COLS[i]}: {true_classes}')
+            print(f'Accuracy for {Config.TYPE_COLS[i]}: {accuracy:.2f}%')
     
         true_classes = data.y_test.values.tolist()
         predicted_classes = self.predictions.tolist()
@@ -84,14 +82,14 @@ class RandomForest(BaseModel):
             correct_predictions = np.sum(np.array(true_classes[i]) == np.array(predicted_classes[i]))
             total_predictions = len(true_classes[i])
             percentage_accuracy = (correct_predictions / total_predictions) * 100
-            print("============================================== true classes and accuracy of y2,y3,y4 ==================================")
+
             print(f'Predicted Classes: {predicted_classes[i]}')
             print(f'True Classes: {true_classes[i]}')
             print(f'Accuracy: {percentage_accuracy:.2f}%')
 
         # Calculate overall accuracy
         overall_accuracy = accuracy_score(data.y_test.values.flatten(), self.predictions.flatten()) * 100
-        print(f'Overall Accuracy of my data: {overall_accuracy:.2f}%')
+        print(f' Total Accuracy : {overall_accuracy:.2f}%')
 
 
     def data_transform(self) -> None:
